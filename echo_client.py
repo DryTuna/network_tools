@@ -9,7 +9,7 @@ client_socket = socket.socket(
 
 client_socket.connect((socket.gethostbyname(socket.gethostname()), 50000))
 
-client_socket.sendall(sys.stdin)
+client_socket.sendall(str(sys.stdin))
 
 client_socket.shutdown(socket.SHUT_WR)
 

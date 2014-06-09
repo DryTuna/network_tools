@@ -7,7 +7,7 @@ server_socket = socket.socket(
 
 server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
 server_socket.listen(1)
-conn, addr = server_socket.accept(1)
+conn, addr = server_socket.accept()
 
 conn.recv(32)
 
