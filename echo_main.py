@@ -5,7 +5,7 @@ import sys
 
 from multiprocessing import Process
 
-message = str(sys.stdin)
+message = str(sys.stdin.readline())
 
 server_process = Process(target = echo_server.echo_server)
 client_process = Process(target = echo_client.echo_client, args=(message,))

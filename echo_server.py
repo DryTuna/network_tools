@@ -11,6 +11,6 @@ def echo_server():
     server_socket.listen(1)
     conn, addr = server_socket.accept()
 
-    print conn.recv(32)
+    print "Client: " + conn.recv(32)
 
     conn.sendall("Yes, i hear you.")

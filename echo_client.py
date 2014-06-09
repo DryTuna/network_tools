@@ -13,6 +13,6 @@ def echo_client(message):
 
     client_socket.shutdown(socket.SHUT_WR)
 
-    print client_socket.recv(32)
+    print "Server: " + client_socket.recv(32)
 
     client_socket.close()
