@@ -16,3 +16,5 @@ def echo_client(message):
     print "Server: " + client_socket.recv(32)
 
     client_socket.close()
+
+    return 2000

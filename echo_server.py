@@ -1,6 +1,6 @@
 import socket
 
-def echo_server():
+def echo_server(num):
 
     server_socket = socket.socket(
         socket.AF_INET,
@@ -14,3 +14,5 @@ def echo_server():
     print "Client: " + conn.recv(32)
 
     conn.sendall("Yes, i hear you.")
+
+    num = 1000
