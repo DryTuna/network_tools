@@ -9,11 +9,12 @@ def server_start():
     server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
     return server_socket
 
-def server_run(server_socket):
+def server_run(num, server_socket):
+    num.value = 1.0
     server_socket.listen(1)
     conn, addr = server_socket.accept()
 
-    print "Client: " + conn.recv(32)
-
-    conn.sendall("Yes, i hear you.")
-
+    line = str(conn.recv(32))
+    print "Client: " + line
+    results.append(line)
+    conn.sendall(line)
