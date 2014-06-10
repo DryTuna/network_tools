@@ -5,12 +5,12 @@ import sys
 
 from multiprocessing import Process
 
-message = str(sys.stdin.readline())
+a = echo_server.server_start()
 
-server_process = Process(target = echo_server.echo_server)
-client_process = Process(target = echo_client.echo_client, args=(message,))
-server_process.start()
-client_process.start()
-#pdb.set_trace()
-server_process.join()
-client_process.join()
+while True:
+    message = str(sys.stdin.readline())
+    server_process = Process(target = echo_server.server_run ,args = (a,))
+    client_process = Process(target = echo_client.echo_client ,args = (message,))
+    server_process.start()
+    client_process.start()
+    client_process.join()
