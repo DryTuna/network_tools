@@ -1,18 +1,28 @@
 import sys
 import socket
 
-client_socket = socket.socket(
-    socket.AF_INET,
-    socket.SOCK_STREAM,
-    socket.IPPROTO_IP
-)
 
-client_socket.connect((socket.gethostbyname(socket.gethostname()), 50000))
+def client():
+    message = str(sys.stdin)
+    client_socket = socket.socket(
+        socket.AF_INET,
+        socket.SOCK_STREAM,
+        socket.IPPROTO_IP
+    )
 
-client_socket.sendall(sys.stdin)
+    #client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    #client_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
 
-client_socket.shutdown(socket.SHUT_WR)
+    client_socket.connect((socket.gethostbyname(socket.gethostname()), 50000))
 
-print client_socket.recv(32)
+    client_socket.sendall(message)
 
-client_socket.close()
+    client_socket.shutdown(socket.SHUT_WR)
+
+    a = client_socket.recv(32)
+
+    client_socket.close()
+    print a
+    return a
+
+client()
