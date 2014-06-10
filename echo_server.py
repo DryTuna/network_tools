@@ -1,11 +1,6 @@
 import socket
 
-<<<<<<< HEAD
-def echo_server(num):
-
-=======
 def server_start():
->>>>>>> e0692016d81784daa8001848af867f2902f658e8
     server_socket = socket.socket(
         socket.AF_INET,
         socket.SOCK_STREAM,
@@ -20,10 +15,5 @@ def server_run(server_socket):
 
     print "Client: " + conn.recv(32)
 
-<<<<<<< HEAD
     conn.sendall("Yes, i hear you.")
 
-    num = 1000
-=======
-    conn.sendall("Yes, i hear you.")
->>>>>>> e0692016d81784daa8001848af867f2902f658e8
