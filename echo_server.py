@@ -1,13 +1,10 @@
 import socket
 
-results = []
-
 def server_start():
     server_socket = socket.socket(
         socket.AF_INET,
         socket.SOCK_STREAM,
         socket.IPPROTO_IP)
-
     server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
     return server_socket
 
@@ -17,5 +14,4 @@ def server_run(num, server_socket):
     conn, addr = server_socket.accept()
     line = str(conn.recv(32))
     print "Client: " + line
-    results.append(line)
     conn.sendall(line)
