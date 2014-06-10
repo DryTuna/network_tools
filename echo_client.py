@@ -6,15 +6,10 @@ def echo_client(message):
                 socket.AF_INET,
                 socket.SOCK_STREAM,
                 socket.IPPROTO_IP)
-
     client_socket.connect((socket.gethostbyname(socket.gethostname()), 50000))
-
     client_socket.sendall(message)
-
     client_socket.shutdown(socket.SHUT_WR)
-
     print "Server: " + client_socket.recv(32)
-
     client_socket.close()
 
     return 2000
