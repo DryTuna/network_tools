@@ -1,20 +1,25 @@
 import socket
 
-def server_start():
-    server_socket = socket.socket(
-        socket.AF_INET,
-        socket.SOCK_STREAM,
-        socket.IPPROTO_IP)
-    server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-    return server_socket
+class server_class():
 
-def server_run(num, server_socket):
-    num.value = 1.0
-    server_socket.listen(1)
-    conn, addr = server_socket.accept()
+    def __init__(self):
+        self.server_socket = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM,
+            socket.IPPROTO_IP)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        self.server_socket.listen(1)
 
-    line = str(conn.recv(32))
-    print "Client: " + line
-
-    conn.sendall(line)
+    def server_run(self, num):
+        num.value = 1.0
+        conn, addr = self.server_socket.accept()
+        data_send = ""
+        while 1:
+            data = conn.recv(32)
+            if not data:
+                break
+            data_send += data
+        conn.sendall(data_send)
+        
 
