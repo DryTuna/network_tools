@@ -16,5 +16,4 @@ def server_run(num, server_socket):
 
     line = str(conn.recv(32))
     print "Client: " + line
-    results.append(line)
     conn.sendall(line)
