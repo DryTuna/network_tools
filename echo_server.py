@@ -1,4 +1,5 @@
 import socket
+import os
 
 class server_class():
 
@@ -54,9 +55,17 @@ class server_class():
         elif protocol != "HTTP/1.1":
             return self.returnError("Protocol Error")
         elif method == "GET":
+            resource = self._read_resource(resource)
             return self.return200(resource)
         else:
             return self.return200('')
+
+    def _read_resource(self,resource):
+        cwd = os.getcwd()
+        thefile = open(cwd + '/resources' + resource, "rb")
+        readFile = thefile.read()
+        print readFile
+        return readFile
 
     def return200(self, URI="You're good!"):
         a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
