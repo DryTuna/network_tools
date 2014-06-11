@@ -8,8 +8,8 @@ class server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind(('0.0.0.0', 8000))
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        #self.server_socket.bind(('127.0.0.1', 50000))
         self.server_socket.listen(1)
         self.data_send = ""
         self.keywords=["GET","POST","HEAD",u"PUT",u'DELETE',u"TRACE","OPTIONS","CONNECT","PATCH"]
