@@ -13,8 +13,7 @@ print 'created sockets' + str(type(server_socket))
 while True:
     client_socket = client_class()
     message = str(sys.stdin.readline())
-    server_process = Process(target = server_socket.server_run,
-                               args = (Value,))
+    server_process = Process(target = server_socket.server_run)
     server_process.start()
 
     client_socket.client_run(message)
