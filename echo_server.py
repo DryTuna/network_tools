@@ -14,6 +14,7 @@ class server_class():
         self.server_socket.listen(1)
         self.data_send = ""
         self.keywords=["GET","POST","HEAD",u"PUT",u'DELETE',u"TRACE","OPTIONS","CONNECT","PATCH"]
+        self.root_directory = os.getcwd() + '/resources'
 
     def server_run(self):
 #        num.value = 1.0
@@ -41,13 +42,12 @@ class server_class():
         while i < len(lines):
             lines[i] = lines[i].split(" ")
             i+=1
-        print lines
         method = lines[0][0]
         resource = lines[0][1]
         protocol = lines[0][2]
 
 
-        print 'parsing data'
+        print method + resource + protocol
         if method not in self.keywords:
             return self.returnError("KeyWord Error")
         elif resource[0] != "/":
@@ -55,21 +55,43 @@ class server_class():
         elif protocol != "HTTP/1.1":
             return self.returnError("Protocol Error")
         elif method == "GET":
-            resource = self._read_resource(resource)
-            return self.return200(resource)
+            if ".html" in resource:
+                resource = self._read_html(resource)
+                return self.return_html(resource)
+            elif ".jpg" in resource:
+                resource = self._read_jpg(resource)
+                return self.return_jpg(resource)
+            else:
+                return self.return200('')
         else:
             return self.return200('')
 
-    def _read_resource(self,resource):
-        cwd = os.getcwd()
-        thefile = open(cwd + '/resources' + resource, "rb")
+    def _read_html(self,resource):
+        thefile = open(self.root_directory + resource, "rb")
         readFile = thefile.read()
-        print readFile
+        #print readFile
         return readFile
 
+    def _read_jpg(self,resource):
+        thefile = open(self.root_directory + resource, "rb")
+        readFile = thefile.read()
+        #print readFile
+        return readFile
+
+    def return_jpg(self, URI):
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\n\r\n %s'% URI
+        return a
+
+    def return_html(self, URI):
+        #a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
+        #return a.encode('utf-8')
+        return a
+
     def return200(self, URI="You're good!"):
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
         return a.encode('utf-8')
+        return a
 
     def returnError(self, extraInfo):
         errorMessage = ("HTTP/1.1 400 BAD REQUEST" + extraInfo).encode('utf-8')
