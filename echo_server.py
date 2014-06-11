@@ -78,6 +78,16 @@ class server_class():
         #print readFile
         return readFile
 
+    def return_all(self):
+        return_list=['HTTP/1.1']
+        return_list.append(messageThing) #for example 200 OK
+        return_list.append("Content-Type: " + contentType) #for example text/html
+        return_list.append("Content-Length: " + contentLength) #for example len(message)
+        return_list.append("\r\n")
+        finalMessage = "\r\n".join(return_list)
+        return finalMessage
+
+
     def return_jpg(self, URI):
         a = 'HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\n\r\n %s'% URI
         return a
