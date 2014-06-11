@@ -9,16 +9,14 @@ class server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        #self.server_socket.bind(('127.0.0.1', 50000))
+        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        self.server_socket.bind(('0.0.0.0', 8000))
         self.server_socket.listen(1)
         self.data_send = ""
         self.keywords=["GET","POST","HEAD",u"PUT",u'DELETE',u"TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/resources'
 
     def server_run(self):
-#        num.value = 1.0
-#NOT SURE ABOUT THIS LOOP 
         conn, addr = self.server_socket.accept()
         self.data_send = ""
         while 1:
@@ -26,10 +24,8 @@ class server_class():
             if len(data) < 32:
                 break
             self.data_send += data
-        #print self.data_send
         dataReturn=self.parse_data()
         #dataReturn.encode('utf-8')
-        #print dataReturn
         conn.sendall(dataReturn)
         #conn.sendall()
         conn.close()
@@ -67,15 +63,14 @@ class server_class():
             return self.return200('')
 
     def _read_html(self,resource):
-        thefile = open(self.root_directory + resource, "rb")
-        readFile = thefile.read()
-        #print readFile
+        with open(self.root_directory + resource, "rb") as thefile:
+            readFile = thefile.read()
         return readFile
 
     def _read_jpg(self,resource):
-        thefile = open(self.root_directory + resource, "rb")
-        readFile = thefile.read()
-        #print readFile
+        with open(self.root_directory + resource, "rb") as thefile:
+            readFile = thefile.read()
+        print type(readFile)
         return readFile
 
     def return_all(self):
@@ -89,7 +84,7 @@ class server_class():
 
 
     def return_jpg(self, URI):
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\n\r\n %s'% URI
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: %i\r\n\r\n%s'% (len(URI), URI)
         return a
 
     def return_html(self, URI):
@@ -100,11 +95,12 @@ class server_class():
 
     def return200(self, URI="You're good!"):
         a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
-        return a.encode('utf-8')
+        #return a.encode('utf-8')
         return a
 
     def returnError(self, extraInfo):
-        errorMessage = ("HTTP/1.1 400 BAD REQUEST" + extraInfo).encode('utf-8')
+        errorMessage = ("HTTP/1.1 400 BAD REQUEST" + extraInfo)
+        #.encode('utf-8')
         return errorMessage
 
 
