@@ -24,12 +24,12 @@ class server_class():
             if len(data) < 32:
                 break
             self.data_send += data
-        print self.data_send
+        #print self.data_send
         dataReturn=self.parse_data()
-        dataReturn.encode('utf-8')
-        print dataReturn
-        conn.sendall("AHHHHHH")
-        #conn.sendall('HTTP/1.1 200 OK\r\n\r\n')
+        #dataReturn.encode('utf-8')
+        #print dataReturn
+        conn.sendall(dataReturn)
+        #conn.sendall()
         conn.close()
 
 
@@ -40,24 +40,26 @@ class server_class():
         while i < len(lines):
             lines[i] = lines[i].split(" ")
             i+=1
+        print lines
+        method = lines[0][0]
+        resource = lines[0][1]
+        protocol = lines[0][2]
+
 
         print 'parsing data'
-        if lines[0][0] not in self.keywords:
+        if method not in self.keywords:
             return self.returnError("KeyWord Error")
-        elif lines[0][1][0] != "/":
+        elif resource[0] != "/":
             return self.returnError("Resource Error")
-        elif lines[0][2] != "HTTP/1.1":
+        elif protocol != "HTTP/1.1":
             return self.returnError("Protocol Error")
-        elif lines[0][0] == "GET":
-            return self.return200(lines[0][1])
+        elif method == "GET":
+            return self.return200(resource)
         else:
             return self.return200('')
 
-    def return200(self, URI):
-        a = "HTTP/1.1 200 OK"
-        if not URI:
-            return a.encode('utf-8')
-        a += "\r\n" + URI
+    def return200(self, URI="You're good!"):
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
         return a.encode('utf-8')
 
     def returnError(self, extraInfo):
