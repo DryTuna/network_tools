@@ -24,10 +24,11 @@ class server_class():
             if len(data) < 32:
                 break
             self.data_send += data
-        print 'sending data'
+        print self.data_send
         dataReturn=self.parse_data()
         dataReturn.encode('utf-8')
-        conn.sendall('AHHHHHHH')
+        print dataReturn
+        conn.sendall("AHHHHHH")
         #conn.sendall('HTTP/1.1 200 OK\r\n\r\n')
         conn.close()
 
@@ -65,4 +66,5 @@ class server_class():
 
 
 server = server_class()
-server.server_run()
+while True:
+    server.server_run()
