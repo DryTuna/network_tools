@@ -9,12 +9,12 @@ class server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind(('0.0.0.0', 8000))
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
         self.server_socket.listen(1)
         self.data_send = ""
-        self.keywords=["GET","POST","HEAD",u"PUT",u'DELETE',u"TRACE","OPTIONS","CONNECT","PATCH"]
-        self.root_directory = os.getcwd() + '/resources'
+        self.keywords=["GET","POST","HEAD",u"PUT",u'DELETE',
+                        u"TRACE","OPTIONS","CONNECT","PATCH"]
+        self.root_directory = os.getcwd() + '/webroot'
 
     def server_run(self):
         conn, addr = self.server_socket.accept()
@@ -25,9 +25,7 @@ class server_class():
                 break
             self.data_send += data
         dataReturn=self.parse_data()
-        #dataReturn.encode('utf-8')
         conn.sendall(dataReturn)
-        #conn.sendall()
         conn.close()
 
 
@@ -42,66 +40,49 @@ class server_class():
         resource = lines[0][1]
         protocol = lines[0][2]
 
-
         print method + resource + protocol
+
         if method not in self.keywords:
             return self.returnError("KeyWord Error")
+
         elif resource[0] != "/":
             return self.returnError("Resource Error")
+
         elif protocol != "HTTP/1.1":
             return self.returnError("Protocol Error")
+
         elif method == "GET":
+            read_file = ""
+            with open(self.root_directory + resource, "rb") as the_file:
+                read_file = the_file.read()
             if ".html" in resource:
-                resource = self._read_html(resource)
-                return self.return_html(resource)
+                return self.return_html(read_file)
             elif ".jpg" in resource:
-                resource = self._read_jpg(resource)
-                return self.return_jpg(resource)
+                return self.return_jpg(read_file)
+            elif ".png" in resource:
+                return self.return_png(read_file)
             else:
-                return self.return200('')
+                return self.return_200(read_file)
         else:
-            return self.return200('')
-
-    def _read_html(self,resource):
-        with open(self.root_directory + resource, "rb") as thefile:
-            readFile = thefile.read()
-        return readFile
-
-    def _read_jpg(self,resource):
-        with open(self.root_directory + resource, "rb") as thefile:
-            readFile = thefile.read()
-        print type(readFile)
-        return readFile
-
-    def return_all(self):
-        return_list=['HTTP/1.1']
-        return_list.append(messageThing) #for example 200 OK
-        return_list.append("Content-Type: " + contentType) #for example text/html
-        return_list.append("Content-Length: " + contentLength) #for example len(message)
-        return_list.append("\r\n")
-        finalMessage = "\r\n".join(return_list)
-        return finalMessage
+            return self.return_200('')
 
 
     def return_jpg(self, URI):
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: %i\r\n\r\n%s'% (len(URI), URI)
-        return a
+        return """HTTP/1.1 200 OK\r\nContent-Type:image/jpeg\r
+        Content-Length: %i\r\n\r\n%s"""% (len(URI), URI)
+
+    def return_png(self, URI):
+        return """HTTP/1.1 200 OK\r\nContent-Type:image/png\r
+        Content-Length: %i\r\n\r\n%s"""% (len(URI), URI)
 
     def return_html(self, URI):
-        #a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
-        #return a.encode('utf-8')
-        return a
+        return 'HTTP/1.1 200 OK\r\nContent-Type: html\r\n\r\n%s'% URI
 
-    def return200(self, URI="You're good!"):
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
-        #return a.encode('utf-8')
-        return a
+    def return_200(self, URI):
+        return 'HTTP/1.1 200 OK\r\nContent-Type: \r\n\r\n%s'% URI
 
     def returnError(self, extraInfo):
-        errorMessage = ("HTTP/1.1 400 BAD REQUEST" + extraInfo)
-        #.encode('utf-8')
-        return errorMessage
+        return ("HTTP/1.1 400 BAD REQUEST" + extraInfo)
 
 
 server = server_class()
