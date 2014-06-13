@@ -1,6 +1,7 @@
 from HTTPError import *
 import socket
 import os
+from os.path import isdir, isfile
 
 class server_class():
 
@@ -15,6 +16,7 @@ class server_class():
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
         self.server_socket.listen(1)
+
 
     def server_run(self):
         conn, addr = self.server_socket.accept()
@@ -64,27 +66,14 @@ class server_class():
             raise HTTP440
 
 
-"""
 
 
-    def return_jpg(self, URI):
-        return "HTTP/1.1 200 OK\r\nContent-Type:image/jpeg\r
-        Content-Length: %i\r\n\r\n%s"% (len(URI), URI)
 
-    def return_png(self, URI):
-        return "TTP/1.1 200 OK\r\nContent-Type:image/png\r
-        Content-Length: %i\r\n\r\n%s"% (len(URI), URI)
 
-    def return_html(self, URI):
-        return 'HTTP/1.1 200 OK\r\nContent-Type: html\r\n\r\n%s'% URI
 
-    def return_200(self, URI):
-        return 'HTTP/1.1 200 OK\r\nContent-Type: \r\n\r\n%s'% URI
 
-    def returnError(self, extraInfo):
-        return ("HTTP/1.1 400 BAD REQUEST" + extraInfo)
 
-"""
+
 server = server_class()
 while True:
     server.server_run()
