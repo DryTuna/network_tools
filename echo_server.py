@@ -76,10 +76,6 @@ class Server_class():
 
             file_type = lines[0][1].split(".")[-1]
 
-        #else:
-         #   e = HTTP510()
-          #  return "<h1> {} - {} </h1>".format(e.code, e.message)
-
         if lines[0][0] == "GET":
             return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
         return ""
@@ -98,7 +94,12 @@ class Server_class():
         if "Host" not in x:
             raise HTTP440
     def check_exists(self,x):
-        if not isdir(x) and not isfile(x) or '..' in x:
+        pathway = self.root_directory + x
+        if (not isdir(pathway)) and (not isfile(pathway)) or ('..' in pathway):
+            print pathway
+            print isdir(pathway)
+            print isfile(pathway)
+            print '..' in pathway
             raise HTTP510
 
 
