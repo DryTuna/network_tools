@@ -6,7 +6,7 @@ from os.path import isfile
 from os import listdir
 
 
-class server_class():
+class Server_class():
 
     def __init__(self):
         self.server_socket = socket.socket(
@@ -15,7 +15,7 @@ class server_class():
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind('0.0.0.0',8000)
+        self.server_socket.bind(('0.0.0.0',8000))
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
@@ -27,11 +27,10 @@ class server_class():
         data_send = ""
         while 1:
             data = conn.recv(32)
+            data_send += data
             if len(data) < 32:
                 break
-            data_send += data
         response = "HTTP/1.1 " + self.parse_data(data_send)
-        print response
         conn.sendall(response)
         conn.close()
 
@@ -47,12 +46,13 @@ class server_class():
             self.check_URI(lines[0][1])
             self.check_protocol(lines[0][2])
             self.check_host(lines[1][0])
+            self.check_exists(lines[0][1])
         except HTTPError as e:
-            return "<h1> {} - {} </h1>".format(e.code, e.message)
+            return "{} {}\r\n\r\n".format(e.code, e.message) + "<h1> {} - {} </h1>".format(e.code, e.message)
 
         res = ""
         file_type = "text/html"
-        pathway = self.root_directory + lines[0][1]
+
         if isdir(pathway):
             html_page = ["<p>Directories and Files "]
             html_page.append(lines[0][1])
@@ -76,10 +76,9 @@ class server_class():
 
             file_type = lines[0][1].split(".")[-1]
 
-        else:
-            e = HTTP510()
-            print "<h1> {} - {} </h1>".format(e.code, e.message)
-            return "<h1> {} - {} </h1>".format(e.code, e.message)
+        #else:
+         #   e = HTTP510()
+          #  return "<h1> {} - {} </h1>".format(e.code, e.message)
 
         if lines[0][0] == "GET":
             return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
@@ -98,9 +97,12 @@ class server_class():
     def check_host(self, x):
         if "Host" not in x:
             raise HTTP440
+    def check_exists(self,x):
+        if not isdir(x) and not isfile(x) or '..' in x:
+            raise HTTP510
 
 
 
-server = server_class()
+server = Server_class()
 while True:
     server.server_run()
