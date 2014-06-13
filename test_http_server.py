@@ -27,4 +27,3 @@ def test_bad_protocol():
     assert returnMessage == "HTTP/1.1 <h1> 430 - WRONG PROTOCOL </h1>"
 
 
-    
