@@ -5,6 +5,7 @@ from os.path import isdir
 from os.path import isfile
 from os import listdir
 
+
 class server_class():
 
     def __init__(self):
@@ -18,6 +19,7 @@ class server_class():
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
         self.server_socket.listen(1)
+
 
     def server_run(self):
         conn, addr = self.server_socket.accept()
@@ -87,6 +89,7 @@ class server_class():
     def check_host(self, x):
         if "Host" not in x:
             raise HTTP440
+
 
 server = server_class()
 while True:
