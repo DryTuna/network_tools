@@ -14,8 +14,11 @@ class Server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind(('0.0.0.0',8000))
+    
+        #self.server_socket.bind(('0.0.0.0',8000))
+
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 8000))
+
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
@@ -23,16 +26,17 @@ class Server_class():
 
 
     def server_run(self):
-        conn, addr = self.server_socket.accept()
-        data_send = ""
-        while 1:
-            data = conn.recv(32)
-            data_send += data
-            if len(data) < 32:
-                break
-        response = "HTTP/1.1 " + self.parse_data(data_send)
-        conn.sendall(response)
-        conn.close()
+        while True:
+            conn, addr = self.server_socket.accept()
+            data_send = ""
+            while 1:
+                data = conn.recv(32)
+                data_send += data
+                if len(data) < 32:
+                    break
+            response = "HTTP/1.1 " + self.parse_data(data_send)
+            conn.sendall(response)
+            conn.close()
 
 
     def parse_data(self, r):
@@ -103,7 +107,7 @@ class Server_class():
             raise HTTP510
 
 
-
-server = Server_class()
-while True:
-    server.server_run()
+if __name__ == "__main__":
+    server = Server_class()
+    while True:
+       server.server_run()
