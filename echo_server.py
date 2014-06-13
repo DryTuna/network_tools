@@ -41,6 +41,7 @@ class server_class():
         lines = r.split("\r\n")
         for i in range(len(lines)):
             lines[i] = lines[i].split(" ")
+        pathway = self.root_directory + lines[0][1]
         try:
             self.check_method(lines[0][0])
             self.check_URI(lines[0][1])
@@ -48,9 +49,11 @@ class server_class():
             self.check_host(lines[1][0])
         except HTTPError as e:
             return "<h1> {} - {} </h1>".format(e.code, e.message)
-        
+
+        res = ""
+        file_type = "text/html"
         pathway = self.root_directory + lines[0][1]
-        if isdir(pathway)
+        if isdir(pathway):
             html_page = ["<p>Directories and Files "]
             html_page.append(lines[0][1])
             html_page.append("</p><ul>")
@@ -63,21 +66,25 @@ class server_class():
                     directories.append(item + '/')
             dirs_files = directories + files
             for item in dirs_files:
-                html_page.append('<li><a href="{}">{}</a>>/li>'.format(item, item))
+                html_page.append('<li><a href="{}">{}</a></li>'.format(item, item))
             html_page.append("</ul>")
-            res = html_page
-        
-        elif isfile(pathway)
+            res = '.'.join(html_page)
+
+        elif isfile(pathway):
             with open(self.root_directory + lines[0][1], "rb") as the_file:
                 res = the_file.read()
 
             file_type = lines[0][1].split(".")[-1]
-            if lines[0][0] == "GET":
-                return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
 
         else:
-            raise HTTP510
-            
+            e = HTTP510()
+            print "<h1> {} - {} </h1>".format(e.code, e.message)
+            return "<h1> {} - {} </h1>".format(e.code, e.message)
+
+        if lines[0][0] == "GET":
+            return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
+        return ""
+
 
     def check_method(self, x):
         if x not in self.keywords:
@@ -91,6 +98,7 @@ class server_class():
     def check_host(self, x):
         if "Host" not in x:
             raise HTTP440
+
 
 
 server = server_class()
