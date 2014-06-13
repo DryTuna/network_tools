@@ -70,7 +70,6 @@ class server_class():
     def _read_jpg(self,resource):
         with open(self.root_directory + resource, "rb") as thefile:
             readFile = thefile.read()
-        print type(readFile)
         return readFile
 
     def return_all(self):
@@ -88,13 +87,12 @@ class server_class():
         return a
 
     def return_html(self, URI):
-        #a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <b>%s</b>'% URI
         a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
         #return a.encode('utf-8')
         return a
 
     def return200(self, URI="You're good!"):
-        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n %s'% URI
+        a = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n%s'% URI
         #return a.encode('utf-8')
         return a
 
@@ -103,7 +101,7 @@ class server_class():
         #.encode('utf-8')
         return errorMessage
 
-
-server = server_class()
-while True:
-    server.server_run()
+if __name__ == "__main__":
+    server = server_class()
+    while True:
+        server.server_run()
