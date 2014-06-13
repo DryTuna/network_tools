@@ -14,7 +14,8 @@ class server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        self.server_socket.bind('0.0.0.0',8000)
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
@@ -30,6 +31,7 @@ class server_class():
                 break
             data_send += data
         response = "HTTP/1.1 " + self.parse_data(data_send)
+        print response
         conn.sendall(response)
         conn.close()
 
