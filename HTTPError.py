@@ -20,3 +20,8 @@ class HTTP440(HTTPError):
     def __init__(self):
         self.message = "COOL STORY BRO"
         self.code = "440"
+
+class HTTP510(HTTPError):
+    def __init__(self):
+        self.message = "FILE NOT FOUND"
+        self.code = "510"

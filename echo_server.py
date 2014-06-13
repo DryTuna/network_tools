@@ -1,6 +1,10 @@
 from HTTPError import *
 import socket
 import os
+from os.path import isdir
+from os.path import isfile
+from os import listdir
+
 
 class server_class():
 
@@ -16,6 +20,7 @@ class server_class():
         self.root_directory = os.getcwd() + '/webroot'
         self.server_socket.listen(1)
 
+
     def server_run(self):
         conn, addr = self.server_socket.accept()
         data_send = ""
@@ -25,6 +30,7 @@ class server_class():
                 break
             data_send += data
         response = "HTTP/1.1 " + self.parse_data(data_send)
+        print response
         conn.sendall(response)
         conn.close()
 
@@ -34,6 +40,7 @@ class server_class():
         lines = r.split("\r\n")
         for i in range(len(lines)):
             lines[i] = lines[i].split(" ")
+        pathway = self.root_directory + lines[0][1]
         try:
             self.check_method(lines[0][0])
             self.check_URI(lines[0][1])
@@ -42,12 +49,40 @@ class server_class():
         except HTTPError as e:
             return "<h1> {} - {} </h1>".format(e.code, e.message)
 
-        with open(self.root_directory + lines[0][1], "rb") as the_file:
-            res = the_file.read()
+        res = ""
+        file_type = "text/html"
+        pathway = self.root_directory + lines[0][1]
+        if isdir(pathway):
+            html_page = ["<p>Directories and Files "]
+            html_page.append(lines[0][1])
+            html_page.append("</p><ul>")
+            directories = []
+            files = []
+            for item in listdir(pathway):
+                if isfile(pathway+item):
+                    files.append(item)
+                else:
+                    directories.append(item + '/')
+            dirs_files = directories + files
+            for item in dirs_files:
+                html_page.append('<li><a href="{}">{}</a></li>'.format(item, item))
+            html_page.append("</ul>")
+            res = '.'.join(html_page)
 
-        file_type = lines[0][1].split(".")[-1]
+        elif isfile(pathway):
+            with open(self.root_directory + lines[0][1], "rb") as the_file:
+                res = the_file.read()
+
+            file_type = lines[0][1].split(".")[-1]
+
+        else:
+            e = HTTP510()
+            print "<h1> {} - {} </h1>".format(e.code, e.message)
+            return "<h1> {} - {} </h1>".format(e.code, e.message)
+
         if lines[0][0] == "GET":
-            return """200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}""".format(file_type, len(res), res)
+            return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
+        return ""
 
 
     def check_method(self, x):
@@ -64,27 +99,7 @@ class server_class():
             raise HTTP440
 
 
-"""
 
-
-    def return_jpg(self, URI):
-        return "HTTP/1.1 200 OK\r\nContent-Type:image/jpeg\r
-        Content-Length: %i\r\n\r\n%s"% (len(URI), URI)
-
-    def return_png(self, URI):
-        return "TTP/1.1 200 OK\r\nContent-Type:image/png\r
-        Content-Length: %i\r\n\r\n%s"% (len(URI), URI)
-
-    def return_html(self, URI):
-        return 'HTTP/1.1 200 OK\r\nContent-Type: html\r\n\r\n%s'% URI
-
-    def return_200(self, URI):
-        return 'HTTP/1.1 200 OK\r\nContent-Type: \r\n\r\n%s'% URI
-
-    def returnError(self, extraInfo):
-        return ("HTTP/1.1 400 BAD REQUEST" + extraInfo)
-
-"""
 server = server_class()
 while True:
     server.server_run()
