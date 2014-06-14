@@ -15,11 +15,11 @@ class Server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    
+        #print socket.gethostbyname(socket.gethostname())
         #self.server_socket.bind(('0.0.0.0',8000))
 
-        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 8000))
-
+        #self.server_socket.bind(socket.gethostbyname(socket.gethostname()), 50000))
+        self.server_socket.bind(("127.0.0.1", 50000))
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
@@ -35,6 +35,7 @@ class Server_class():
                 data_send += data
                 if len(data) < 32:
                     break
+            print data_send
             response = "HTTP/1.1 " + self.parse_data(data_send)
             conn.sendall(response)
             conn.close()
@@ -45,6 +46,7 @@ class Server_class():
         for i in range(len(lines)):
             lines[i] = lines[i].split(" ")
         pathway = self.root_directory + lines[0][1]
+        print lines
         try:
             self.check_method(lines[0][0])
             self.check_URI(lines[0][1])

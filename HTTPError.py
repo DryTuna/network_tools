@@ -18,7 +18,7 @@ class HTTP430(HTTPError):
 
 class HTTP440(HTTPError):
     def __init__(self):
-        self.message = "COOL STORY BRO"
+        self.message = "NO HOST DETECTED"
         self.code = "440"
 
 class HTTP510(HTTPError):
