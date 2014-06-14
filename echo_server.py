@@ -15,8 +15,11 @@ class Server_class():
             socket.SOCK_STREAM,
             socket.IPPROTO_IP)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind(('0.0.0.0',8000))
+    
+        #self.server_socket.bind(('0.0.0.0',8000))
+
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 8000))
+
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
@@ -35,7 +38,6 @@ class Server_class():
             response = "HTTP/1.1 " + self.parse_data(data_send)
             conn.sendall(response)
             conn.close()
-        
 
     def parse_data(self, r):
         r = r.decode('utf-8')
@@ -100,11 +102,8 @@ class Server_class():
     def check_exists(self,x):
         pathway = self.root_directory + x
         if (not isdir(pathway)) and (not isfile(pathway)) or ('..' in pathway):
-            print pathway
-            print isdir(pathway)
-            print isfile(pathway)
-            print '..' in pathway
             raise HTTP510
+
 
 
 if __name__ == '__main__':
