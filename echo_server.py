@@ -4,11 +4,12 @@ import os
 from os.path import isdir
 from os.path import isfile
 from os import listdir
+import mimetypes
 
 
 class Server_class():
 
-    def __init__(self):
+    def __init__(self, backlog):
         self.server_socket = socket.socket(
             socket.AF_INET,
             socket.SOCK_STREAM,
@@ -19,21 +20,22 @@ class Server_class():
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'
-        self.server_socket.listen(1)
+        self.server_socket.listen(backlog)
 
 
     def server_run(self):
-        conn, addr = self.server_socket.accept()
-        data_send = ""
-        while 1:
-            data = conn.recv(32)
-            data_send += data
-            if len(data) < 32:
-                break
-        response = "HTTP/1.1 " + self.parse_data(data_send)
-        conn.sendall(response)
-        conn.close()
-
+        while True:
+            conn, addr = self.server_socket.accept()
+            data_send = ""
+            while 1:
+                data = conn.recv(32)
+                data_send += data
+                if len(data) < 32:
+                    break
+            response = "HTTP/1.1 " + self.parse_data(data_send)
+            conn.sendall(response)
+            conn.close()
+        
 
     def parse_data(self, r):
         r = r.decode('utf-8')
@@ -74,7 +76,9 @@ class Server_class():
             with open(self.root_directory + lines[0][1], "rb") as the_file:
                 res = the_file.read()
 
-            file_type = lines[0][1].split(".")[-1]
+            #file_type = lines[0][1].split(".")[-1]
+            file_type = mimetypes.guess_type(pathway)
+            print file_type
 
         if lines[0][0] == "GET":
             return "200 OK\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}".format(file_type, len(res), res)
@@ -103,7 +107,6 @@ class Server_class():
             raise HTTP510
 
 
-
-server = Server_class()
-while True:
+if __name__ == '__main__':
+    server = Server_class(1)
     server.server_run()

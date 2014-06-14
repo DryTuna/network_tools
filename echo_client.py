@@ -19,7 +19,7 @@ class client_class():
         data_receive = ""
         while 1:
             data = self.client_socket.recv(32)
-            if not data:
-                break
             data_receive += data
+            if len(data) < 32:
+                break
         print "Server: " + data_receive.decode('utf-8')
