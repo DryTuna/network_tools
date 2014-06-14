@@ -18,8 +18,8 @@ class Server_class():
         #print socket.gethostbyname(socket.gethostname())
         #self.server_socket.bind(('0.0.0.0',8000))
 
-        #self.server_socket.bind(socket.gethostbyname(socket.gethostname()), 50000))
-        self.server_socket.bind(("127.0.0.1", 50000))
+        self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 8000))
+        #self.server_socket.bind(("127.0.0.1", 50000))
         self.keywords=["GET","POST","HEAD","PUT",u"DELETE",
                         "TRACE","OPTIONS","CONNECT","PATCH"]
         self.root_directory = os.getcwd() + '/webroot'

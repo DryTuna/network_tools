@@ -12,7 +12,8 @@ class client_class():
 
 
     def client_run(self, message):
-        self.client_socket.connect(("127.0.0.1", 50000))
+        #self.server_socket.bind((socket.gethostbyname(socket.gethostname()), 50000))
+        self.client_socket.connect((socket.gethostbyname(socket.gethostname()), 8000))
         message.encode('utf-8')
         self.client_socket.sendall(message)
         self.client_socket.shutdown(socket.SHUT_WR)
