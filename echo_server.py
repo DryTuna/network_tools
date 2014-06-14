@@ -35,8 +35,9 @@ class Server_class():
                 data_send += data
                 if len(data) < 32:
                     break
-            print data_send
+            print "Input Data: " + data_send + "\r\n"
             response = "HTTP/1.1 " + self.parse_data(data_send)
+            print "Response: " + response + "\r\n"
             conn.sendall(response)
             conn.close()
 

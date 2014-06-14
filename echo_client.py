@@ -24,8 +24,8 @@ class client_class():
 
             if len(data) < 32:
                 break
-        print "Server: " + data_receive.decode('utf-8')
+        #print "Server: " + data_receive.decode('utf-8')
 
         self.client_socket.close()
-        return data_receive.decode('utf-8')
+        return data_receive#.decode('utf-8')
 

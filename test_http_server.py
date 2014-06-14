@@ -47,4 +47,7 @@ def test_injection_attack():
     returnMessage = client.client_run("GET /../hello.html HTTP/1.1\r\nHost: 127.0.0.1:50000\r\n\r\n")
     assert "FILE NOT FOUND" in returnMessage
 
-
+def test_image_load():
+    client = echo_client.client_class()
+    returnMessage = client.client_run("GET /images/sample_1.png HTTP/1.1\r\nHost: 127.0.0.1:50000\r\n\r\n")
+    assert "Content-Length: 8760\r\n" in returnMessage
