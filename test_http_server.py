@@ -14,12 +14,6 @@ server_process.start()
 print "running server"
 
 
-#def test_returnError():
-#   print "started first test"
-#   error_message = echo_server.returnError("There's nothing here.")
-#   assert error_message[:24] == "HTTP/1.1 400 BAD REQUEST"
-
-
 def test_bad_URI():
     """This error should be returned because there is no '/' before the hello.html file"""
     client = echo_client.client_class()
