@@ -1,21 +1,25 @@
-from echo_server import server_class
+from echo_server import Server_class
 from echo_client import client_class
 import pdb
 import sys
 
 from multiprocessing import Process, Value
 
-server_socket = server_class()
+backlog = 5
+server_socket = Server_class(backlog)
 #client_socket = client_class()
+#server_count = Value('i', 1)
+processes = {}
 
-print 'created sockets' + str(type(server_socket))
+#client_socket = client_class()
+#message = str(sys.stdin.readline())
+for x in range(1, backlog+1):
+    processes['server_process{}'.format(x)] = Process(target = server_socket.server_run)
 
-while True:
-    client_socket = client_class()
-    message = str(sys.stdin.readline())
-    server_process = Process(target = server_socket.server_run,
-                               args = (Value,))
-    server_process.start()
+for keys in processes:
+    processes[keys].start()
+    
 
-    client_socket.client_run(message)
-    client_socket.client_socket.close()
+
+#client_socket.client_run(message)
+#client_socket.client_socket.close()
